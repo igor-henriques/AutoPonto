@@ -1,4 +1,5 @@
 ﻿using AutoPonto.Data;
+using AutoPonto.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -22,8 +23,6 @@ namespace AutoPonto.Repository
         Task FillPasswordTextBox(string password);
 
         Task ClickLoginButton();
-
-        Task<bool> UserIsLogged();
     }
 
     public class WebRepository : IWebRepository
@@ -45,11 +44,18 @@ namespace AutoPonto.Repository
         /// /// <param name="URL">URL destino</param>
         public async Task Navigate(string URL)
         {
-            _driver.Navigate().GoToUrl(URL);
+            try
+            {
+                _driver.Navigate().GoToUrl(URL);
 
-            await Task.Delay(1000);
+                await Task.Delay(1000);
 
-            LogWriter.Write($"Navegado à página {URL}");
+                LogWriter.Write($"Navegado à página {URL}");
+            }
+            catch (Exception ex)
+            {
+                Alert.MessageBox((IntPtr)0, ex.ToString(), "AutoPonto Exception");
+            }            
         }
 
         /// <summary>
@@ -59,15 +65,22 @@ namespace AutoPonto.Repository
         /// <returns></returns>
         public async Task FillLoginTextBox(string user)
         {
-            IWebElement tbLogin = WaitUntilElementExists(By.XPath("/html/body/div[2]/div/form/div/div[2]/div[2]/p[2]/input"));
-
-            if (tbLogin != default)
+            try
             {
-                tbLogin.SendKeys(user);
+                IWebElement tbLogin = WaitUntilElementExists(By.XPath("/html/body/div[2]/div/form/div/div[2]/div[2]/p[2]/input"));
 
-                LogWriter.Write($"Textbox de login preenchida com o texto {user}");
+                if (tbLogin != default)
+                {
+                    tbLogin.SendKeys(user);
 
-                await Task.Delay(1000);
+                    LogWriter.Write($"Textbox de login preenchida com o texto {user}");
+
+                    await Task.Delay(1000);
+                }
+            }
+            catch (Exception ex)
+            {
+                Alert.MessageBox((IntPtr)0, ex.ToString(), "AutoPonto Exception");
             }
         }
 
@@ -78,15 +91,22 @@ namespace AutoPonto.Repository
         /// <returns></returns>
         public async Task FillPasswordTextBox(string password)
         {
-            IWebElement tbSenha = WaitUntilElementExists(By.XPath("/html/body/div[2]/div/form/div/div[2]/div[2]/p[3]/input"));
-
-            if (tbSenha != default)
+            try
             {
-                tbSenha.SendKeys(password);
+                IWebElement tbSenha = WaitUntilElementExists(By.XPath("/html/body/div[2]/div/form/div/div[2]/div[2]/p[3]/input"));
 
-                LogWriter.Write($"Textbox de senha preenchida com o texto {password}");
+                if (tbSenha != default)
+                {
+                    tbSenha.SendKeys(password);
 
-                await Task.Delay(1000);
+                    LogWriter.Write($"Textbox de senha preenchida com o texto {password}");
+
+                    await Task.Delay(1000);
+                }
+            }
+            catch (Exception ex)
+            {
+                Alert.MessageBox((IntPtr)0, ex.ToString(), "AutoPonto Exception");
             }
         }
 
@@ -96,15 +116,22 @@ namespace AutoPonto.Repository
         /// <returns></returns>
         public async Task ClickLoginButton()
         {
-            IWebElement btnEntrar = WaitUntilElementExists(By.Id("login"));
-
-            if (btnEntrar != default)
+            try
             {
-                btnEntrar.Click();
+                IWebElement btnEntrar = WaitUntilElementExists(By.Id("login"));
 
-                LogWriter.Write($"Botão de login pressionado");
+                if (btnEntrar != default)
+                {
+                    btnEntrar.Click();
 
-                await Task.Delay(1000);
+                    LogWriter.Write($"Botão de login pressionado");
+
+                    await Task.Delay(1000);
+                }
+            }
+            catch (Exception ex)
+            {
+                Alert.MessageBox((IntPtr)0, ex.ToString(), "AutoPonto Exception");
             }
         }
 
@@ -113,13 +140,20 @@ namespace AutoPonto.Repository
         /// </summary>
         public async Task RegisterButtonClick()
         {
-            IWebElement btnRegister = WaitUntilElementExists(By.XPath(@"//*[@id=""registrar""]"));
+            try
+            {
+                IWebElement btnRegister = WaitUntilElementExists(By.XPath(@"//*[@id=""registrar""]"));
 
-            btnRegister.Click();
+                btnRegister.Click();
 
-            await Task.Delay(1000);
+                await Task.Delay(1000);
 
-            LogWriter.Write("Botão 'Incluir Ponto' pressionado");
+                LogWriter.Write("Botão 'Incluir Ponto' pressionado");
+            }
+            catch (Exception ex)
+            {
+                Alert.MessageBox((IntPtr)0, ex.ToString(), "AutoPonto Exception");
+            }
         }
 
         /// <summary>
@@ -128,16 +162,23 @@ namespace AutoPonto.Repository
         /// <param name="description">Justificativa a ser inserida no campo</param>
         public async Task FillJustifyTextBox(string description)
         {
-            IWebElement textBox = WaitUntilElementExists(By.Id("justificativa"));
-            
-            if (textBox != default)
+            try
             {
-                textBox.SendKeys(description);
+                IWebElement textBox = WaitUntilElementExists(By.Id("justificativa"));
 
-                await Task.Delay(1000);
+                if (textBox != default)
+                {
+                    textBox.SendKeys(description);
 
-                LogWriter.Write($"Justificativa preenchida com o texto {description}");
-            }            
+                    await Task.Delay(1000);
+
+                    LogWriter.Write($"Justificativa preenchida com o texto {description}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Alert.MessageBox((IntPtr)0, ex.ToString(), "AutoPonto Exception");
+            }
         }
 
         /// <summary>
@@ -145,17 +186,24 @@ namespace AutoPonto.Repository
         /// </summary>
         public async Task FinishButtonClick()
         {
-            IWebElement btnConcluir = WaitUntilElementExists(By.XPath("/html/body/div[6]/div[11]/div/button[1]/span"));
-
-            if (btnConcluir != default)
+            try
             {
-                btnConcluir.Click();
+                IWebElement btnConcluir = WaitUntilElementExists(By.XPath("/html/body/div[6]/div[11]/div/button[1]/span"));
 
-                await Task.Delay(1000);
+                if (btnConcluir != default)
+                {
+                    btnConcluir.Click();
 
-                LogWriter.Write("Botão de registrar pressionado");
+                    await Task.Delay(1000);
 
-                LogWriter.Write("PONTO BATIDO!");
+                    LogWriter.Write("Botão de registrar pressionado");
+
+                    LogWriter.Write("PONTO BATIDO!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Alert.MessageBox((IntPtr)0, ex.ToString(), "AutoPonto Exception");
             }
         }
         
@@ -172,34 +220,12 @@ namespace AutoPonto.Repository
 
                 return _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(elementLocator));
             }
-            catch (NoSuchElementException e)
+            catch (Exception ex)
             {
-                LogWriter.Write(e.ToString());
+                Alert.MessageBox((IntPtr)0, ex.ToString(), "AutoPonto Exception");
             }
 
             return default;
-        }
-
-        /// <summary>
-        /// Verifica se o usuário conseguiu realizar login visualizando se há label com nome do funcionário no canto superior direito
-        /// </summary>
-        /// <returns></returns>
-        public async Task<bool> UserIsLogged()
-        {
-            bool response = false;
-
-            IWebElement userName = WaitUntilElementExists(By.XPath("/html/body/div[1]/div[2]/div/div/div[2]/p[1]"));
-
-            if (userName != default)
-            {
-                LogWriter.Write($"Verificado se o usuário {userName.Text} realizou login");
-
-                await Task.Delay(1000);
-
-                response = userName.Text.Length > 0 ? true : false;
-            }
-
-            return response;
         }
 
         private void MoveToPopUp()

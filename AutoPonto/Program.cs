@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Collections.Generic;
 using AutoPonto.Models;
-using System.Runtime.InteropServices;
 
 namespace AutoPonto
 {
@@ -16,10 +15,7 @@ namespace AutoPonto
 
         private static ChromeOptions options = new ChromeOptions();
 
-        private static ManualResetEvent quitEvent = new ManualResetEvent(false);
-
-        [DllImport("User32.dll", CharSet = CharSet.Unicode)]
-        public static extern int MessageBox(IntPtr h, string m, string c, int type);
+        private static ManualResetEvent quitEvent = new ManualResetEvent(false);        
 
         public static void Main()
         {
@@ -30,7 +26,7 @@ namespace AutoPonto
                 //Inicia os serviços
                 new TimeWatch(GetWebContext(), new UserPreferences());
 
-                MessageBox((IntPtr)0, $"AutoPontoService em execução com o PID {Process.GetCurrentProcess().Id}.", "AutoPonto", 0);
+                Alert.MessageBox((IntPtr)0, $"AutoPontoService em execução com o PID {Process.GetCurrentProcess().Id}.", "AutoPonto");
 
                 //Interrompe o console de fechar
                 Stop();
@@ -65,7 +61,7 @@ namespace AutoPonto
             }
             catch (Exception ex)
             {
-                MessageBox((IntPtr)0, ex.ToString(), "AutoPonto", 0);
+                Alert.MessageBox((IntPtr)0, ex.ToString(), "AutoPonto");
                 return default;
             }            
         }
