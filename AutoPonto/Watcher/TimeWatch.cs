@@ -60,6 +60,9 @@ namespace AutoPonto.Watcher
 
         private async void OneSecondEvent(object sender, ElapsedEventArgs e)
         {
+            if ((DateTime.Now.DayOfWeek == DayOfWeek.Saturday) || (DateTime.Now.DayOfWeek == DayOfWeek.Sunday))
+                return;
+
             Task forwardCommand = DateTime.Now switch
             {
                 //Entrada do dia

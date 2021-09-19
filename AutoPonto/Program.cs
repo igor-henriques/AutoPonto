@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Collections.Generic;
 using AutoPonto.Models;
+using System.Runtime.InteropServices;
 
 namespace AutoPonto
 {
@@ -17,10 +18,15 @@ namespace AutoPonto
 
         private static ManualResetEvent quitEvent = new ManualResetEvent(false);
 
+        [DllImport("User32.dll", CharSet = CharSet.Unicode)]
+        public static extern int MessageBox(IntPtr h, string m, string c, int type);
+
         public static void Main()
         {
             //Inicia os serviços
             new TimeWatch(GetWebContext(), new UserPreferences());
+
+            MessageBox((IntPtr)0, $"AutoPontoService em execução com o PID {Process.GetCurrentProcess().Id}.","AutoPonto", 0);
 
             //Interrompe o console de fechar
             Stop();
@@ -28,6 +34,15 @@ namespace AutoPonto
 
         private static IWebRepository GetWebContext()
         {
+            ///Elimina todos os processos existentes do chromedriver
+            foreach (Process instance in Process.GetProcessesByName("chromedriver.exe"))
+            {
+                instance.Kill();
+            }
+
+            //Define propriedade pra esconder o prompt                
+            driverService.HideCommandPromptWindow = true;
+
             //Argumentos para iniciar o chrome em modo silencioso
             options.AddArguments(new List<string>() {
             "--silent-launch",
@@ -39,21 +54,7 @@ namespace AutoPonto
 
             IWebRepository webContext = new WebRepository(driver);
 
-            ConfigureSelenium();
-
             return webContext;
-        }
-
-        private static void ConfigureSelenium()
-        {
-            ///Elimina todos os processos existentes do chromedriver
-            foreach (Process instance in Process.GetProcessesByName("chromedriver.exe"))
-            {
-                instance.Kill();
-            }
-
-            //Define propriedade pra esconder o prompt                
-            driverService.HideCommandPromptWindow = true;
         }
 
         private static void Stop()
