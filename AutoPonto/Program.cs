@@ -23,38 +23,51 @@ namespace AutoPonto
 
         public static void Main()
         {
-            //Inicia os serviços
-            new TimeWatch(GetWebContext(), new UserPreferences());
+            IWebRepository webContext = GetWebContext();
 
-            MessageBox((IntPtr)0, $"AutoPontoService em execução com o PID {Process.GetCurrentProcess().Id}.","AutoPonto", 0);
+            if (webContext != default)
+            {
+                //Inicia os serviços
+                new TimeWatch(GetWebContext(), new UserPreferences());
 
-            //Interrompe o console de fechar
-            Stop();
+                MessageBox((IntPtr)0, $"AutoPontoService em execução com o PID {Process.GetCurrentProcess().Id}.", "AutoPonto", 0);
+
+                //Interrompe o console de fechar
+                Stop();
+            }            
         }
 
         private static IWebRepository GetWebContext()
         {
-            ///Elimina todos os processos existentes do chromedriver
-            foreach (Process instance in Process.GetProcessesByName("chromedriver.exe"))
+            try
             {
-                instance.Kill();
+                ///Elimina todos os processos existentes do chromedriver
+                foreach (Process instance in Process.GetProcessesByName("chromedriver.exe"))
+                {
+                    instance.Kill();
+                }
+
+                //Define propriedade pra esconder o prompt                
+                driverService.HideCommandPromptWindow = true;
+
+                //Argumentos para iniciar o chrome em modo silencioso
+                options.AddArguments(new List<string>() {
+                "--silent-launch",
+                "--no-startup-window",
+                "no-sandbox",
+                "headless",});
+
+                ChromeDriver driver = new ChromeDriver(driverService, options);
+
+                IWebRepository webContext = new WebRepository(driver);
+
+                return webContext;
             }
-
-            //Define propriedade pra esconder o prompt                
-            driverService.HideCommandPromptWindow = true;
-
-            //Argumentos para iniciar o chrome em modo silencioso
-            options.AddArguments(new List<string>() {
-            "--silent-launch",
-            "--no-startup-window",
-            "no-sandbox",
-            "headless",});
-
-            ChromeDriver driver = new ChromeDriver(driverService, options);
-
-            IWebRepository webContext = new WebRepository(driver);
-
-            return webContext;
+            catch (Exception ex)
+            {
+                MessageBox((IntPtr)0, ex.ToString(), "AutoPonto", 0);
+                return default;
+            }            
         }
 
         private static void Stop()
