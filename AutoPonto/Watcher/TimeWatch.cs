@@ -60,8 +60,6 @@ namespace AutoPonto.Watcher
 
         private async void OneSecondEvent(object sender, ElapsedEventArgs e)
         {
-            await CommandForwaded(_userPreferences.DayEnter);            
-
             Task forwardCommand = DateTime.Now switch
             {
                 //Entrada do dia
