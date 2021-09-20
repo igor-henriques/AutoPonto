@@ -47,11 +47,11 @@ namespace AutoPonto
                 driverService.HideCommandPromptWindow = true;
 
                 //Argumentos para iniciar o chrome em modo silencioso
-                options.AddArguments(new List<string>() {
+                /*options.AddArguments(new List<string>() {
                 "--silent-launch",
                 "--no-startup-window",
                 "no-sandbox",
-                "headless",});
+                "headless",});*/
 
                 ChromeDriver driver = new ChromeDriver(driverService, options);
 

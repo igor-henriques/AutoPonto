@@ -59,11 +59,11 @@ namespace AutoPonto.Watcher
         }
 
         private async void OneSecondEvent(object sender, ElapsedEventArgs e)
-        {
+        {            
             if ((DateTime.Now.DayOfWeek == DayOfWeek.Saturday) || (DateTime.Now.DayOfWeek == DayOfWeek.Sunday))
                 return;
 
-            Task forwardCommand = DateTime.Now switch
+            Task forwardCommand = GetTimeToAnalyse() switch
             {
                 //Entrada do dia
                 DateTime nowDate when RandomDayEnter.Equals(nowDate) && !AlreadyRegistered(_userPreferences.DayEnter, nowDate) =>
@@ -86,13 +86,19 @@ namespace AutoPonto.Watcher
 
             await forwardCommand;
         }
+        
+        private DateTime GetTimeToAnalyse()
+        {
+            DateTime Now = DateTime.Now;
+            return new DateTime(Now.Year, Now.Month, Now.Day, Now.Hour, Now.Minute, Now.Second, 0);
+        }
 
         private DateTime SortDate(DateTime startDate, DateTime finalDate)
         {
             DateTime currentDate = DateTime.Now;
             Random rand = new();
 
-            return new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, rand.Next(startDate.Hour, finalDate.Hour), rand.Next(startDate.Minute, finalDate.Minute), rand.Next(0, 60));
+            return new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, rand.Next(startDate.Hour, finalDate.Hour), rand.Next(startDate.Minute, finalDate.Minute), rand.Next(0, 60), 0);
         }
 
         private bool AlreadyRegistered(Ponto curPonto, DateTime curDatetime)
