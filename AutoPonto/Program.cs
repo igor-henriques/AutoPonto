@@ -24,7 +24,7 @@ namespace AutoPonto
             if (webContext != default)
             {
                 //Inicia os serviços
-                new TimeWatch(GetWebContext(), new UserPreferences());
+                new TimeWatch(webContext, new UserPreferences());
 
                 Alert.MessageBox((IntPtr)0, $"AutoPontoService em execução com o PID {Process.GetCurrentProcess().Id}.", "AutoPonto");
 
@@ -47,11 +47,11 @@ namespace AutoPonto
                 driverService.HideCommandPromptWindow = true;
 
                 //Argumentos para iniciar o chrome em modo silencioso
-                /*options.AddArguments(new List<string>() {
+                options.AddArguments(new List<string>() {
                 "--silent-launch",
                 "--no-startup-window",
                 "no-sandbox",
-                "headless",});*/
+                "headless",});
 
                 ChromeDriver driver = new ChromeDriver(driverService, options);
 
